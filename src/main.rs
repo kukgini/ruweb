@@ -1,7 +1,9 @@
+mod setup;
+
 use actix_web::{middleware, web, App, HttpServer};
 use clap::Parser;
 
-#[derive(Parser)]
+#[derive(Parser,Debug)]
 struct Opts {
     #[clap(short, long, default_value = "9020")]
     port: u32,
@@ -14,7 +16,8 @@ async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(env_logger::Env::default().filter_or(env_logger::DEFAULT_FILTER_ENV, "info"));
     let opts: Opts = Opts::parse();
     let host = std::env::var("HOST").unwrap_or("0.0.0.0".to_string());
-    println!("Hello, world!");
+    println!("Hello, world! {:#?}", opts);
+    setup::initialize().await;
     HttpServer::new(move || {
         App::new()
             .wrap(middleware::Logger::default())
